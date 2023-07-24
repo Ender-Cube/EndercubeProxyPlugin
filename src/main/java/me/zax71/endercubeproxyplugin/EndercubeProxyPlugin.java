@@ -1,51 +1,51 @@
 package me.zax71.endercubeproxyplugin;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import com.velocitypowered.api.proxy.ProxyServer;
+import me.zax71.endercubeproxyplugin.listeners.RedisSub;
 import org.slf4j.Logger;
+import redis.clients.jedis.Jedis;
 
 @Plugin(
         id = "endercubeproxyplugin",
         name = "EndercubeProxyPlugin",
-        version = "0.1.0"
+        version = "1.0.0",
+        authors = {"Zax71"}
 )
 public class EndercubeProxyPlugin {
 
-    @Inject
     private Logger logger;
+    private ProxyServer proxy;
 
-    public static MqttClient MQTTClient;
+
+    public static Jedis REDIS;
+
+    @Inject
+    public EndercubeProxyPlugin(Logger logger, ProxyServer proxy) {
+        this.logger = logger;
+        this.proxy = proxy;
+    }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        this.initMQTT();
+        this.initRedis();
     }
 
-    private void initMQTT() {
-        String broker = "tcp://localhost:1883";
-        String clientID = "EndercubeProxyPlugin";
-        MemoryPersistence persistence = new MemoryPersistence();
+    private void initRedis() {
+        // Init Redis, hard coding values because config is too difficult
+        REDIS = new Jedis(
+                "redis",
+                6379
+        );
 
-
-        try {
-            logger.info("Initialising MQTT");
-            MQTTClient = new MqttClient(broker, clientID, persistence);
-
-            MQTTClient.setCallback(new OnMessageCallback());
-            MQTTClient.connect();
-            MQTTClient.subscribe("endercube/gotoMap/#", 2);
-        } catch (MqttException exception) {
-            logger.warn("reason " + exception.getReasonCode());
-            logger.warn("msg " + exception.getMessage());
-            logger.warn("loc " + exception.getLocalizedMessage());
-            logger.warn("cause " + exception.getCause());
-            logger.warn("excep " + exception);
-            exception.printStackTrace();
-        }
+        // Create subscriber thread
+        Thread newThread = new Thread(() -> {
+            REDIS.subscribe(new RedisSub(logger, proxy), "endercube/proxy/map/switch");
+        });
+        newThread.start();
+        logger.info("Started Redis subscribe thread");
     }
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.zax71"
-version = "0.1.0"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -20,8 +20,11 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
 
-    // MQTT
-    implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.2")
+    // Redis (Jedis)
+    implementation("redis.clients:jedis:4.3.0")
+
+    // JSON stuff
+    implementation("com.google.code.gson:gson:2.10.1")
 
 }
 
