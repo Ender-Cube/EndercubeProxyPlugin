@@ -1,27 +1,36 @@
 package me.zax71.endercubeproxyplugin;
 
+import co.aikar.commands.VelocityCommandManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import me.zax71.endercubeproxyplugin.commands.HubCommand;
+import me.zax71.endercubeproxyplugin.commands.ParkourLeaderboardCommand;
 import me.zax71.endercubeproxyplugin.listeners.RedisSub;
+import me.zax71.endercubeproxyplugin.utils.SQLiteHandler;
 import org.slf4j.Logger;
 import redis.clients.jedis.Jedis;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Plugin(
         id = "endercubeproxyplugin",
         name = "EndercubeProxyPlugin",
-        version = "1.0.0",
+        version = "1.1.0",
         authors = {"Zax71"}
 )
 public class EndercubeProxyPlugin {
 
     private Logger logger;
     private ProxyServer proxy;
-
-
-    public static Jedis REDIS;
+    public static SQLiteHandler SQLite;
 
     @Inject
     public EndercubeProxyPlugin(Logger logger, ProxyServer proxy) {
@@ -32,18 +41,45 @@ public class EndercubeProxyPlugin {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         this.initRedis();
+        SQLite = new SQLiteHandler();
+
+        VelocityCommandManager manager = new VelocityCommandManager(proxy, this);
+        manager.registerCommand(new ParkourLeaderboardCommand());
+        manager.registerCommand(new HubCommand());
+
+        // Add parkourMaps completion
+        manager.getCommandCompletions().registerCompletion("parkourMaps", context ->
+                getParkourMapsFromRedis()
+                        .stream()
+                        .map(map -> map.get("name"))
+                        .toList()
+        );
+
+    }
+
+    private List<HashMap<String, String>> getParkourMapsFromRedis() {
+        // Init Redis, hard coding values because config is too difficult
+        Jedis redis = new Jedis(
+                "redis",
+                6379
+        );
+
+        Type typeToken = new TypeToken<ArrayList<HashMap<String, String>>>() {
+        }.getType();
+
+        return new Gson().fromJson(redis.get("parkourMaps"), typeToken);
     }
 
     private void initRedis() {
         // Init Redis, hard coding values because config is too difficult
-        REDIS = new Jedis(
+        Jedis redis = new Jedis(
                 "redis",
                 6379
         );
 
         // Create subscriber thread
         Thread newThread = new Thread(() -> {
-            REDIS.subscribe(new RedisSub(logger, proxy), "endercube/proxy/map/switch");
+            redis.subscribe(new RedisSub(logger, proxy), "endercube/proxy/map/switch");
         });
         newThread.start();
         logger.info("Started Redis subscribe thread");

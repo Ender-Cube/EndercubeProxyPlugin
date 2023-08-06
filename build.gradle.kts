@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.zax71"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -13,6 +13,7 @@ repositories {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven("https://repo.aikar.co/content/groups/aikar/")
 }
 
 dependencies {
@@ -20,12 +21,20 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
 
+    // MiniMessage
+    implementation("net.kyori:adventure-text-minimessage:4.13.1")
+
     // Redis (Jedis)
     implementation("redis.clients:jedis:4.3.0")
+
+    // MariaDB
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.1.4")
 
     // JSON stuff
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // ACF
+    implementation("co.aikar:acf-velocity:0.5.1-SNAPSHOT")
 }
 
 java {
@@ -44,6 +53,9 @@ tasks {
         dependsOn(shadowJar)
     }
     shadowJar {
+        relocate("co.aikar.commands", "me.zax71.endercubeProxyPlugin.acf")
+        relocate("co.aikar.locales", "me.zax71.endercubeProxyPlugin.locales")
+        relocate("org.enginehub.squirrelid", "me.zax71.endercubeProxyPlugin.squirrelid")
         mergeServiceFiles()
         archiveClassifier.set("") // Prevent the -all suffix
     }
