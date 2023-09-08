@@ -8,10 +8,11 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.zaxxer.hikari.HikariDataSource;
 import me.zax71.endercubeproxyplugin.commands.HubCommand;
 import me.zax71.endercubeproxyplugin.commands.ParkourLeaderboardCommand;
 import me.zax71.endercubeproxyplugin.listeners.RedisSub;
-import me.zax71.endercubeproxyplugin.utils.SQLiteHandler;
+import net.endercube.EndercubeCommon.SQLWrapper;
 import org.slf4j.Logger;
 import redis.clients.jedis.Jedis;
 
@@ -30,7 +31,7 @@ public class EndercubeProxyPlugin {
 
     private Logger logger;
     private ProxyServer proxy;
-    public static SQLiteHandler SQLite;
+    public static SQLWrapper SQL;
 
     @Inject
     public EndercubeProxyPlugin(Logger logger, ProxyServer proxy) {
@@ -41,7 +42,20 @@ public class EndercubeProxyPlugin {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         this.initRedis();
-        SQLite = new SQLiteHandler();
+
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            logger.error("Could not find MariaDB JDBC driver");
+            e.printStackTrace();
+        }
+
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl("jdbc:mariadb://mariadb:3306/endercube?createDatabaseIfNotExist=true");
+        dataSource.setUsername(System.getenv("MARIADB_USER"));
+        dataSource.setPassword(System.getenv("MARIADB_PASSWORD"));
+
+        SQL = new SQLWrapper(dataSource);
 
         VelocityCommandManager manager = new VelocityCommandManager(proxy, this);
         manager.registerCommand(new ParkourLeaderboardCommand());

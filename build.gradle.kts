@@ -13,6 +13,7 @@ repositories {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven("https://jitpack.io")
     maven("https://repo.aikar.co/content/groups/aikar/")
 }
 
@@ -23,6 +24,12 @@ dependencies {
 
     // MiniMessage
     implementation("net.kyori:adventure-text-minimessage:4.13.1")
+
+    // Endercube common lib
+    implementation("com.github.ender-cube:endercubecommon:c0568a8281")
+
+    // HikariCP
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     // Redis (Jedis)
     implementation("redis.clients:jedis:4.3.0")
@@ -55,7 +62,6 @@ tasks {
     shadowJar {
         relocate("co.aikar.commands", "me.zax71.endercubeProxyPlugin.acf")
         relocate("co.aikar.locales", "me.zax71.endercubeProxyPlugin.locales")
-        relocate("org.enginehub.squirrelid", "me.zax71.endercubeProxyPlugin.squirrelid")
         mergeServiceFiles()
         archiveClassifier.set("") // Prevent the -all suffix
     }

@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
-import static me.zax71.endercubeproxyplugin.EndercubeProxyPlugin.SQLite;
+import static me.zax71.endercubeproxyplugin.EndercubeProxyPlugin.SQL;
 import static me.zax71.endercubeproxyplugin.utils.ComponentUtils.toHumanReadableTime;
 
 @CommandAlias("parkourleaderboard")
@@ -52,7 +52,7 @@ public class ParkourLeaderboardCommand extends BaseCommand {
 
     private static Component leaderboardEntry(String color, String mapName, int placement) {
         String placementToNameGap;
-        if (SQLite.getPlayerOverall(mapName, placement) == null) {
+        if (SQL.getPlayerOverall(mapName, placement) == null) {
             return Component.empty();
         }
         if (placement >= 10) {
@@ -60,7 +60,7 @@ public class ParkourLeaderboardCommand extends BaseCommand {
         } else {
             placementToNameGap = "  ";
         }
-        return MiniMessage.miniMessage().deserialize("<" + color + ">#<bold>" + placement + placementToNameGap + SQLite.getPlayerOverall(mapName, placement) + "</bold> " + toHumanReadableTime(SQLite.getTimeOverall(mapName, placement)))
+        return MiniMessage.miniMessage().deserialize("<" + color + ">#<bold>" + placement + placementToNameGap + SQL.getPlayerOverall(mapName, placement) + "</bold> " + toHumanReadableTime(SQL.getTimeOverall(mapName, placement)))
                 .append(Component.newline());
     }
 }
