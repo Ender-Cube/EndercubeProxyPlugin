@@ -9,6 +9,7 @@ version = "1.1.0"
 
 repositories {
     mavenCentral()
+    // mavenLocal()
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
@@ -26,7 +27,8 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.13.1")
 
     // Endercube common lib
-    implementation("com.github.ender-cube:endercubecommon:c0568a8281")
+    implementation("com.github.ender-cube:endercubecommon:087295926e")
+    // implementation("net.endercube:EndercubeCommon:1.1.1")
 
     // HikariCP
     implementation("com.zaxxer:HikariCP:5.0.1")
