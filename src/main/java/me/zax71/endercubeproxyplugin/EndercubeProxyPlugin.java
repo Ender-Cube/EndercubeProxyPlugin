@@ -9,6 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariDataSource;
+import me.zax71.endercubeproxyplugin.commands.DiscordCommand;
 import me.zax71.endercubeproxyplugin.commands.HubCommand;
 import me.zax71.endercubeproxyplugin.commands.ParkourLeaderboardCommand;
 import me.zax71.endercubeproxyplugin.listeners.RedisSub;
@@ -60,6 +61,7 @@ public class EndercubeProxyPlugin {
         VelocityCommandManager manager = new VelocityCommandManager(proxy, this);
         manager.registerCommand(new ParkourLeaderboardCommand());
         manager.registerCommand(new HubCommand());
+        manager.registerCommand(new DiscordCommand());
 
         // Add parkourMaps completion
         manager.getCommandCompletions().registerCompletion("parkourMaps", context ->
