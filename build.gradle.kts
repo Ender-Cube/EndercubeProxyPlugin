@@ -27,8 +27,8 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.13.1")
 
     // Endercube common lib
-    implementation("com.github.ender-cube:endercubecommon:3eefcc2888")
-    // implementation("net.endercube:EndercubeCommon:1.1.2")
+    implementation("com.github.ender-cube:endercubecommon:306c2ec3f9")
+    // implementation("net.endercube:EndercubeCommon:1.1.3")
 
     // HikariCP
     implementation("com.zaxxer:HikariCP:5.0.1")
