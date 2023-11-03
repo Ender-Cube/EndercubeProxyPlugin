@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "me.zax71"
-version = "1.2.0"
+version = "1.2.1"
 
 repositories {
     mavenCentral()
@@ -27,7 +27,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.13.1")
 
     // Endercube common lib
-    implementation("com.github.ender-cube:endercubecommon:1e8da50caf")
+    implementation("com.github.ender-cube:endercubecommon:v2.2.0")
     // implementation("net.endercube:EndercubeCommon:1.1.3")
 
     // HikariCP

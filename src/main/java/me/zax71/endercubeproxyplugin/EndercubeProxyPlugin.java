@@ -13,7 +13,7 @@ import me.zax71.endercubeproxyplugin.commands.DiscordCommand;
 import me.zax71.endercubeproxyplugin.commands.HubCommand;
 import me.zax71.endercubeproxyplugin.commands.ParkourLeaderboardCommand;
 import me.zax71.endercubeproxyplugin.listeners.RedisSub;
-import net.endercube.EndercubeCommon.SQLWrapper;
+import net.endercube.EndercubeCommon.utils.SQLWrapper;
 import org.slf4j.Logger;
 import redis.clients.jedis.Jedis;
 
@@ -56,7 +56,7 @@ public class EndercubeProxyPlugin {
         dataSource.setUsername(System.getenv("MARIADB_USER"));
         dataSource.setPassword(System.getenv("MARIADB_PASSWORD"));
 
-        SQL = new SQLWrapper(dataSource);
+        SQL = new SQLWrapper(dataSource, "playerTimes");
 
         VelocityCommandManager manager = new VelocityCommandManager(proxy, this);
         manager.registerCommand(new ParkourLeaderboardCommand());

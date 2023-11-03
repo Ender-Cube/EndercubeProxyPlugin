@@ -5,13 +5,13 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Default;
 import com.velocitypowered.api.proxy.Player;
-import net.endercube.EndercubeCommon.ComponentUtils;
+import net.endercube.EndercubeCommon.utils.ComponentUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import static me.zax71.endercubeproxyplugin.EndercubeProxyPlugin.SQL;
-import static net.endercube.EndercubeCommon.ComponentUtils.toHumanReadableTime;
+import static net.endercube.EndercubeCommon.utils.ComponentUtils.toHumanReadableTime;
 
 @CommandAlias("parkourleaderboard")
 public class ParkourLeaderboardCommand extends BaseCommand {
